@@ -4,6 +4,7 @@
     "fastify-socket.io": "^5.1.0",
     "prompt-sync": "^4.2.0",
     "socket.io": "^4.8.3",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "uuid": "^13.0.0"
   }
 }

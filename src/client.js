@@ -6,6 +6,8 @@ const readline = require('readline').createInterface({
 
 const client = io("http://localhost:3000");
 
+let gCode = null;
+
 function promptUser() {
     readline.question("\n", (action) => {
         const args = action.split(" ");
@@ -13,6 +15,9 @@ function promptUser() {
         switch (args[0]) {
             case "join":
                 join(args[1], args[2]);
+                break;
+            case "answer":
+                answer(args[1]);
                 break;
             case "quit":
                 process.exit(0);
@@ -24,7 +29,14 @@ function promptUser() {
 
 function join(id, username) {
     console.log("joining " + id + " " + username);
+    gCode = id;
+
     client.emit("player:join", { code: id, username });
+}
+
+function answer(response) {
+    console.log("code " + gCode);
+    client.emit("player:answer", { code: gCode, response });
 }
 
 client.on("connect", () => {

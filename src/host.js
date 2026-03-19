@@ -6,8 +6,6 @@ const readline = require('readline').createInterface({
 
 const client = io("http://localhost:3000");
 
-const quizID = 0;
-
 let code;
 
 // Only for testing
@@ -17,7 +15,11 @@ function promptUser() {
 
         switch (args[0]) {
             case "manual":
-                hostManual(quizID);
+                hostManual(
+                    args[1] || 6,
+                    args[2] || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImJvYiIsImVtYWlsIjoiYm9iQGJvYi5jYSIsImlhdCI6MTc3MzkxODg2OCwiZXhwIjoxNzczOTU0ODY4fQ.EaV-n6suAkTeUzY1vdEZWUy7KuX8Ja_E_Pn4_AWE2L8"
+                );
+
                 break;
             case "start":
                 start(code);
@@ -36,8 +38,8 @@ function promptUser() {
     });
 }
 
-function hostManual(id) {
-    client.emit("host:manual", { quizID: id });
+function hostManual(id, token) {
+    client.emit("host:manual", { quizID: id, token });
 }
 
 function start(id) {
