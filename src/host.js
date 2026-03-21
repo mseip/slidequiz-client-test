@@ -1,5 +1,6 @@
+const consola = require("consola");
 const io = require("socket.io-client");
-const readline = require('readline').createInterface({
+const readline = require("readline").createInterface({
     input: process.stdin,
     output: process.stdout
 });
@@ -14,10 +15,11 @@ function promptUser() {
         const args = action.split(" ");
 
         switch (args[0]) {
-            case "manual":
-                hostManual(
-                    args[1] || 6,
-                    args[2] || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImJvYiIsImVtYWlsIjoiYm9iQGJvYi5jYSIsImlhdCI6MTc3MzkxODg2OCwiZXhwIjoxNzczOTU0ODY4fQ.EaV-n6suAkTeUzY1vdEZWUy7KuX8Ja_E_Pn4_AWE2L8"
+            case "create":
+                create(
+                    args[1] || "manual",
+                    args[2] || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6ImpvZSIsImVtYWlsIjoiam9lQGpvZS5jYSIsImlhdCI6MTc3NDA3NDE2MiwiZXhwIjoxNzc0MTEwMTYyfQ.663XhWajv2yCJc-oBggSgXQJWjcqR3BhRSkoTO5EDRk",
+                    args[3] || 3,
                 );
 
                 break;
@@ -38,8 +40,8 @@ function promptUser() {
     });
 }
 
-function hostManual(id, token) {
-    client.emit("host:manual", { quizID: id, token });
+function create(mode, token, quizID) {
+    client.emit("host:create", { mode, token, quizID });
 }
 
 function start(id) {
@@ -56,28 +58,32 @@ function kick(id, playerID) {
 
 client.on("connect", () => {
     client.on("error", (msg) => {
-        console.log("error: " + JSON.stringify(msg));
+        consola.log("error: ", msg);
     });
 
     client.on("host:created", (msg) => {
-        console.log("created game -> " + JSON.stringify(msg));
+        consola.log("created game -> ", msg);
         code = msg?.code;
     });
 
     client.on("host:players", (msg) => {
-        console.log("player list -> " + JSON.stringify(msg));
+        consola.log("player list -> ", msg);
     });
 
     client.on("host:questions", (msg) => {
-        console.log("all questions -> " + JSON.stringify(msg));
+        consola.log("all questions -> ", msg);
+    });
+
+    client.on("host:response", (msg) => {
+        consola.log("got response -> ", msg);
     });
 
     client.on("game:question", (msg) => {
-        console.log("current question -> " + JSON.stringify(msg));
+        consola.log("current question -> ", msg);
     });
 
-    console.log("connected");
-    console.log("manual | start | jump | end | quit (program)")
+    consola.log("connected");
+    consola.log("create | start | jump | end | quit (program)")
 
     promptUser();
 });

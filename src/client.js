@@ -1,3 +1,4 @@
+const consola = require("consola");
 const io = require("socket.io-client");
 const readline = require('readline').createInterface({
     input: process.stdin,
@@ -28,41 +29,41 @@ function promptUser() {
 }
 
 function join(id, username) {
-    console.log("joining " + id + " " + username);
+    consola.log("joining ", id, username);
     gCode = id;
 
     client.emit("player:join", { code: id, username });
 }
 
 function answer(response) {
-    console.log("code " + gCode);
+    consola.log("code ", gCode);
     client.emit("player:answer", { code: gCode, response });
 }
 
 client.on("connect", () => {
     client.on("error", (msg) => {
-        console.log("error: " + JSON.stringify(msg));
+        consola.log("error: ", msg);
     });
 
     client.on("player:joined", (msg) => {
-        console.log("joined: " + JSON.stringify(msg));
+        consola.log("joined: ", msg);
     });
 
     client.on("player:kicked", (msg) => {
-        console.log("kicked: " + JSON.stringify(msg));
+        consola.log("kicked: ", msg);
     });
 
     client.on("game:question", (msg) => {
-        console.log("current question" + JSON.stringify(msg));
+        consola.log("current question", msg);
     });
 
     client.on("game:ended", () => {
-        console.log("game has ended");
+        consola.log("game has ended");
         process.exit(0);
     });
 
-    console.log("connected");
-    console.log("join | answer | end | quit (program)")
+    consola.log("connected");
+    consola.log("join | answer | end | quit (program)")
 
     promptUser();
 });
